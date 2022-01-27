@@ -50,23 +50,25 @@ All [primitive numeric integer types][primitive numeric type], including machine
 
 ## Signed integers
 
-Type   | Size     | Equisized primitive signed integer 
--------|----------|-----------------------------------
-`i8`   | 1 byte   | `i8`                              
-`i16`  | 2 bytes  | `i16`                             
-`i32`  | 4 bytes  | `i32`                             
-`i64`  | 8 bytes  | `i64`                             
-`i128` | 16 bytes | `i128`                            
+Type    | Size                   | Equisized primitive signed integer 
+--------|------------------------|-----------------------------------
+`i8`    | 1 byte                 | `i8`                              
+`i16`   | 2 bytes                | `i16`                             
+`i32`   | 4 bytes                | `i32`                             
+`i64`   | 8 bytes                | `i64`                             
+`i128`  | 16 bytes               | `i128`                            
+`isize` | **platform-dependent** | `isize`
 
 ## Unsigned integers
 
-Type   | Size     | Equisized primitive signed integer 
--------|----------|-----------------------------------
-`u8`   | 1 byte   | `i8`                              
-`u16`  | 2 bytes  | `i16`                             
-`u32`  | 4 bytes  | `i32`                             
-`u64`  | 8 bytes  | `i64`                             
-`u128` | 16 bytes | `i128`                            
+Type    | Size                   | Equisized primitive signed integer 
+--------|------------------------|-----------------------------------
+`u8`    | 1 byte                 | `i8`                              
+`u16`   | 2 bytes                | `i16`                             
+`u32`   | 4 bytes                | `i32`                             
+`u64`   | 8 bytes                | `i64`                             
+`u128`  | 16 bytes               | `i128`                            
+`usize` | **platform-dependent** | `isize`
 
 # Example
 
