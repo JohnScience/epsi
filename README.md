@@ -1,6 +1,6 @@
-# Primitive promotions for primitive numeric types
+# Equisized (primitive) signed ints for primitive ints
 
-According to Rust's reference, [primitive numeric types][primitive numeric type] in Rust are such:
+According to Rust's reference, [primitive numeric integer types][primitive numeric type] in Rust are such:
 
 # Numeric types
 
@@ -26,12 +26,6 @@ Type   | Minimum            | Maximum
 `i64`  | -(2<sup>63</sup>)  | 2<sup>63</sup>-1
 `i128` | -(2<sup>127</sup>) | 2<sup>127</sup>-1
 
-
-## Floating-point types
-
-The IEEE 754-2008 "binary32" and "binary64" floating-point types are `f32` and
-`f64`, respectively.
-
 ## Machine-dependent integer types
 
 The `usize` type is an unsigned integer type with the same number of bits as the
@@ -52,61 +46,41 @@ within an object along with one byte past the end.
 
 # Why this trait is needed
 
-All [primitive numeric types][primitive numeric type], including machine-dependent types, come with known size that can be obtained via [`core::mem::size_of<T>()`][core::mem::size_of]. The greater the size is, the greater the number of possible values that can be represented by the type. Integer intervals as sets are not [closed](https://en.wikipedia.org/wiki/Closure_(mathematics)) under many operations, notably addition and multiplication. Since `u8` represents the integer interval \[0..2<sup>8</sup>-1\], the same holds for this type. By analogy, the same is true for `u16`, `u32`, etc. Similarly, the set of values representable by floating point numbers with algebraic structure avoiding imprecision (i.e. distinct from the algebraic structure on floating point numbers) is not closed under many operations as well.
-
-One way to circumvent the problem is to use [type promotion]. [Type promotion][type promotion] allows to use a type representing a superset of the original type. For every [primitive numeric type] (except for `u128`, `i128`, and `f64`) there is a canonical [type promotion]. For `u8` the canonical [type promotion] is `u16`, for `i16` the canonical type promotion is `i32`, and so on.
+All [primitive numeric integer types][primitive numeric type], including machine-dependent types, come with known size that can be obtained via [`core::mem::size_of<T>()`][core::mem::size_of] and the corresponding signed or unsigned counterpart with the exact size. Such algorithms as C++ 20 standard midpoint relies both on equisized primitive unsigned integers and on equisized primitive signed integers. This crate offers the latter.
 
 ## Signed integers
 
-Type   | Size     | Canonical type promotion | Size of promotion
--------|----------|--------------------------|-------------------
-`i8`   | 1 byte   | `i16`                    | 2 bytes
-`i16`  | 2 bytes  | `i32`                    | 4 bytes
-`i32`  | 4 bytes  | `i64`                    | 8 bytes
-`i64`  | 8 bytes  | `i128`                   | 16 bytes
-`i128` | 16 bytes | **undefined**            | **undefined**
+Type   | Size     | Equisized primitive signed integer 
+-------|----------|-----------------------------------
+`i8`   | 1 byte   | `i8`                              
+`i16`  | 2 bytes  | `i16`                             
+`i32`  | 4 bytes  | `i32`                             
+`i64`  | 8 bytes  | `i64`                             
+`i128` | 16 bytes | `i128`                            
 
 ## Unsigned integers
 
-Type   | Size     | Canonical type promotion | Size of promotion
--------|----------|--------------------------|-------------------
-`u8`   | 1 byte   | `u16`                    | 2 bytes
-`u16`  | 2 bytes  | `u32`                    | 4 bytes
-`u32`  | 4 bytes  | `u64`                    | 8 bytes
-`u64`  | 8 bytes  | `u128`                   | 16 bytes
-`u128` | 16 bytes | **undefined**            | **undefined**
-
-## Floating-point numbers
-
-Type   | Size     | Canonical type promotion | Size of promotion
--------|----------|--------------------------|-------------------
-`f32`  | 4 bytes  | `f64`                    | 8 bytes
-`f64`  | 8 bytes  | **undefined**            | **undefined**
-
-Theoretically, one could go one step further and define `u256`, yet it would not be primitive and even simple operations on that type (such as addition) would not have the corresponding CPU instructions.
-
-**Note** Strictly speaking, `u128` and `i128` are poorly supported on current architectures and it may or may not be reasonable to **use** implementation of `PrimitivePromotionExt` extension trait on `u64` and `i64`. However, if you want to use these implementations, `primitive_promotion` crate is what you need because `u64` and `i64` implement the `PrimitivePromotionExt` trait.
+Type   | Size     | Equisized primitive signed integer 
+-------|----------|-----------------------------------
+`u8`   | 1 byte   | `i8`                              
+`u16`  | 2 bytes  | `i16`                             
+`u32`  | 4 bytes  | `i32`                             
+`u64`  | 8 bytes  | `i64`                             
+`u128` | 16 bytes | `i128`                            
 
 # Example
 
-You can notice that `PrimitivePromotionExt` is quite long to type. To make it shorter, you are advised to rename the imported trait as `PP`. Because its uses are meant to be accompanied with [fully qualified syntax](https://doc.rust-lang.org/book/ch19-03-advanced-traits.html#fully-qualified-syntax-for-disambiguation-calling-methods-with-the-same-name), such shorthand is indispensible.
+You can notice that `EquisizedPrimitiveSignedIntExt` is quite long to type. To make it shorter, you are advised to rename the imported trait as `EPSI`, the namesake for the crate. Because its uses are meant to be accompanied with [fully qualified syntax](https://doc.rust-lang.org/book/ch19-03-advanced-traits.html#fully-qualified-syntax-for-disambiguation-calling-methods-with-the-same-name), such shorthand is indispensible.
 
 ```rust
-use primitive_promotion::PrimitivePromotionExt as PP;
-
-fn midpoint(a: &u8, b: &u8) -> u8 {
-  // <u8 as TraitName>:: is an example of fully qualified syntax
-  let a = *a as <u8 as PP>::PrimitivePromotion;
-  let b = *b as <u8 as PP>::PrimitivePromotion;
-  ((a+b)/2) as u8
-}
-
-fn main() {
+  use epsi::EquisizedPrimitiveSignedIntExt as EPSI;
   let a: u8 = u8::MAX;
-  let b: u8 = u8::MAX;
-  assert_eq!(midpoint(&a,&b), u8::MAX);
-}
+  assert_eq!(a as <u8 as EPSI>::EquisizedPrimitiveSignedInt, -1i8);
 ```
+
+# Analogues
+
+* C++: [std::make_signed](https://en.cppreference.com/w/cpp/types/make_signed)
 
 # License
 
