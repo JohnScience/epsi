@@ -3,8 +3,8 @@
 
 /// Extension trait offering EquisizedPrimitiveSignedInt type.
 /// 
-/// * `<u8 as EquisizedPrimitiveSignedIntExt>::EquisizedPrimitiveSignedInt == u16`;
-/// * `<i16 as EquisizedPrimitiveSignedIntExt>::EquisizedPrimitiveSignedInt == i32`;
+/// * `<u8 as EquisizedPrimitiveSignedIntExt>::EquisizedPrimitiveSignedInt == i8`;
+/// * `<i16 as EquisizedPrimitiveSignedIntExt>::EquisizedPrimitiveSignedInt == i16`;
 /// * ...
 pub trait EquisizedPrimitiveSignedIntExt {
     type EquisizedPrimitiveSignedInt;
